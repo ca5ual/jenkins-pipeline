@@ -34,7 +34,7 @@ pipeline {
         stage ('Remove old containers') {
             steps {
                 script {
-                    sh 'docker rm -f $(docker ps -aq)'
+                    sh 'docker rm -f $(docker ps -aq --filter "name=nodemain" --filter "name=nodedev")'
                 }
             }
         }
