@@ -25,7 +25,7 @@ pipeline {
                     if (env.BRANCH_NAME == 'main') {
                         sh 'docker build -t nodemain:v1.0 .' 
                     } else if (env.BRANCH_NAME == 'dev') {
-                        sh 'docker build -t nodedev:v1.0'
+                        sh 'docker build -t nodedev:v1.0 .'
                     }
                 }
             }
