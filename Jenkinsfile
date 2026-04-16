@@ -59,7 +59,7 @@ pipeline {
                         sh """
                         echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin
 
-                        docker push ca5ual/lab3:${ENV}:v1.0
+                        docker push ca5ual/lab3:${ENV}-v1.0
                         """
                     }
                 }
