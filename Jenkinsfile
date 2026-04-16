@@ -57,6 +57,7 @@ pipeline {
                                 --exit-code 0 \
                                 --severity HIGH,MEDIUM,LOW \
                                 --no-progress \
+                                --skip-db-update \
                                 ${image}
                         """,
                         returnStdout: true
