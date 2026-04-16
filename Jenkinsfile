@@ -1,10 +1,12 @@
+@Library('shared-lib') _
+
 pipeline {
     agent any
 
     tools {
         nodejs "node" // use what I configured in tools
     }
-    
+
     environment {
         DOCKER_IMAGE = "ca5ual/lab3"
     }
@@ -40,7 +42,7 @@ pipeline {
         stage ('Build docker image') {
             steps {
                 script {
-                    sh "docker build -t ${DOCKER_IMAGE}:${ENV}-v1.0 ."
+                    buildImage(env.DOCKER_IMAGE, env.ENV)
                 }
             }
         }
@@ -48,21 +50,10 @@ pipeline {
         stage('Push to docker') {
             steps {
                 script {
-                    withCredentials([usernamePassword(
-                        credentialsId: 'docker-creds',
-                        usernameVariable: 'DOCKER_USER',
-                        passwordVariable: 'DOCKER_PASS'
-                    )]) {
-
-                        sh """
-                        echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin
-
-                        docker push ${DOCKER_IMAGE}:${ENV}-v1.0
-                        """
+                    pushImage(env.DOCKER_IMAGE, env.ENV, "docker-creds")
                     }
                 }
             }
-        }
 
         stage ('Trigger deploy') {
             steps {
@@ -73,3 +64,4 @@ pipeline {
         }
     }
 }
+
