@@ -56,24 +56,15 @@ pipeline {
 
         stage('Scan image for vulnerabilities') {
             steps {
-                script {
-                    def image = "${DOCKER_IMAGE}:${ENV}-v1.0"
-                    def cacheDir = "/tmp/trivy-cache-${BUILD_ID}"
-                    
-                    sh """
-                        mkdir -p ${cacheDir}
-                        
-                        docker run --rm \
-                            -v ${cacheDir}:/root/.cache/trivy \
-                            -v /var/run/docker.sock:/var/run/docker.sock \
-                            aquasec/trivy:latest image \
-                            --exit-code 0 \
-                            --severity HIGH,MEDIUM,LOW \
-                            --no-progress \
-                            --cache-dir /root/.cache/trivy \
-                            ${image}
-                    """
-                }
+                sh """
+                    docker run --rm \
+                        -v /var/run/docker.sock:/var/run/docker.sock \
+                        aquasec/trivy:latest image \
+                        --exit-code 0 \
+                        --severity HIGH,MEDIUM,LOW \
+                        --no-progress \
+                        ${DOCKER_IMAGE}:${ENV}-v1.0
+                """
             }
         }
 
