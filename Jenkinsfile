@@ -39,7 +39,7 @@ pipeline {
             }
         }
 
-        stage ('Build docker image') {
+        stage ('Build image') {
             steps {
                 script {
                     buildImage(env.DOCKER_IMAGE, env.ENV)
@@ -47,7 +47,27 @@ pipeline {
             }
         }
 
-        stage('Push to docker') {
+        stage('Scan image for vulnerabilities') {
+            steps {
+                script {
+                    def image = "${DOCKER_IMAGE}:${ENV}-v1.0"
+                    def vulnerabilities = sh(
+                        script: """
+                            trivy image \
+                                --exit-code 0 \
+                                --severity HIGH,MEDIUM,LOW \
+                                --no-progress \
+                                ${image}
+                        """,
+                        returnStdout: true
+                    ).trim()
+
+                    echo "Vulnerability report:\n${vulnerabilities}"
+                }
+            }
+        }
+
+        stage('Push image') {
             steps {
                 script {
                     pushImage(env.DOCKER_IMAGE, env.ENV, "docker-creds")
