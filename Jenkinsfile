@@ -53,6 +53,7 @@ pipeline {
                     buildImage(env.DOCKER_IMAGE, env.ENV)
                 }
             }
+        }
 
         stage('Scan image for vulnerabilities') {
             steps {
@@ -85,4 +86,5 @@ pipeline {
         }
     }
 }
+
 
