@@ -24,8 +24,12 @@ pipeline {
                 script {
                     if (env.BRANCH_NAME == 'main') {
                         env.ENV = 'nodemain'
+                        env.PORT = '3000'
+                        env.TAG = "v1.0"
                     } else if (env.BRANCH_NAME == 'dev') {
                         env.ENV = 'nodedev'
+                        env.PORT = '3001'
+                        env.TAG = "v1.0"
                     }
                 }
             }
@@ -55,9 +59,9 @@ pipeline {
             steps {
                 script {
                     if (env.BRANCH_NAME == 'main') {
-                        sh 'docker run -d --name ${ENV} --expose 3000 -p 3000:3000 ${ENV}:v1.0'
+                        sh 'docker run -d --name ${ENV} --expose ${PORT} -p ${PORT}:${PORT} ${ENV}:${TAG}'
                     } else if (env.BRANCH_NAME == 'dev') {
-                        sh 'docker run -d --name ${ENV} --expose 3001 -p 3001:3000 ${ENV}:v1.0'
+                        sh 'docker run -d --name ${ENV} --expose ${PORT} -p ${PORT}:${PORT} ${ENV}:${TAG}'
                     }
                 }
             }
