@@ -3,7 +3,7 @@
 pipeline {
     agent {
         docker {
-            image 'ca5ual/lab3:nodealpine'
+            image 'ca5ual/lab3:nodealpine-7.8.0'
             args '-v /var/run/docker.sock:/var/run/docker.sock -u root:root'
         }
     }
