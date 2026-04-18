@@ -330,7 +330,35 @@ trigger downstream job: "Deploy_to_main"
     ↓
 [Deployment job uses pullImage & deployContainer & removeContainer]
 ```
+---
 
+Custom Dockerfile: Building the Perfect CI/CD Environment
+
+This project includes a **custom Dockerfile** that serves as the execution environment for all Jenkins pipeline stages.
+
+### The Dockerfile
+
+```dockerfile
+FROM node:7.8.0-alpine
+
+RUN apk add --no-cache \
+    curl
+
+RUN curl -L https://download.docker.com/linux/static/stable/x86_64/docker-20.10.21.tgz | tar xz -C / && \
+    mv /docker/docker /usr/local/bin/ && \
+    rm -rf /docker
+
+RUN curl -sfL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s ---b /usr/local/bin
+
+RUN curl -L -o /usr/local/bin/hadolint https://github.com/hadolint/hadolint/releases/download/v2.12.0/hadolint-Linux-x86_64 && chmod +x /usr/local/bin/hadolint
+```
+
+### Why This Dockerfile is needed
+
+#### Base Image: `node:7.8.0-alpine`
+- **Node.js pre-installed** - ready to run `npm install` and `npm test`
+- **Trivy, Hadolint and Docker pre-installed** - no need to install tools during pipeline execution - everything is pre-baked
+- 
 ---
 
 ## How to Use This Pipeline
