@@ -9,8 +9,10 @@ pipeline {
     }
 
     environment {
-        DOCKER_IMAGE = "ca5ual/lab3"
+        DOCKER_REPO = "ca5ual/lab3"
+        V_TAG = "v1.0"
     }
+
 
     stages {
         
@@ -30,10 +32,10 @@ pipeline {
             steps {
                 script {
                     if (env.BRANCH_NAME == 'main') {
-                        env.ENV = 'nodemain'
+                        env.TAG = 'nodemain'
                         env.JOB = 'Deploy_to_main'
                     } else if (env.BRANCH_NAME == 'dev') {
-                        env.ENV = 'nodedev'
+                        env.TAG = 'nodedev'
                         env.JOB = 'Deploy_to_dev'
                     }
                 }
@@ -51,7 +53,7 @@ pipeline {
         stage ('Build image') {
             steps {
                 script {
-                    buildImage(env.DOCKER_IMAGE, env.ENV)
+                    buildImage(env.DOCKER_REPO, env.TAG)
                 }
             }
         }
@@ -63,7 +65,7 @@ pipeline {
                         --exit-code 0 \
                         --severity HIGH,MEDIUM,LOW \
                         --no-progress \
-                        ${DOCKER_IMAGE}:${ENV}-v1.0
+                        ${DOCKER_REPO}:${TAG}-${V_TAG}
                 """
             }
         }
@@ -71,7 +73,7 @@ pipeline {
         stage('Push image') {
             steps {
                 script {
-                    pushImage(env.DOCKER_IMAGE, env.ENV, "docker-creds")
+                    pushImage(env.DOCKER_REPO, env.TAG, "docker-creds")
                     }
                 }
             }
